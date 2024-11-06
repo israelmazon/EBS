@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flowers for Erika <3</title>
+<style>
+  body {
+    margin: 0;
+    /* Set the background color to light purple */
+    background-color: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+  }
+  canvas {
+    border: 1px solid #cccccc00;
+  }
+  #greetings {
+    margin-top: 20px; /* Space between canvas and text */
+    font-size: 24px;
+    color: #333;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="flowerCanvas" width="400" height="400"></canvas>
+<div id="greetings">To Erika, thank you for everything <3</div>
+
+<script>
+const canvas = document.getElementById('flowerCanvas');
+const ctx = canvas.getContext('2d');
+let petals = [];
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const totalPetals = 8;
+let growth = 0;
+
+// Colors
+const petalColor = '#CB9DF0'; // Periwinkle
+const centerColor = '#7E60BF'; // Yellow
+
+function drawCenter() {
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
+  ctx.fillStyle = centerColor;
+  ctx.fill();
+}
+
+function Petal(angle) {
+  this.angle = angle;
+  this.length = 0;
+  this.maxLength = 100;
+  this.width = 30;
+
+  this.draw = function() {
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(this.angle);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(this.width, -this.length / 2, 0, -this.length);
+    ctx.quadraticCurveTo(-this.width, -this.length / 2, 0, 0);
+    ctx.fillStyle = petalColor;
+    ctx.fill();
+    ctx.restore();
+  };
+
+  this.grow = function() {
+    if (this.length < this.maxLength) {
+      this.length += 2;
+    }
+    this.draw();
+  };
+}
+
+function initPetals() {
+  for (let i = 0; i < totalPetals; i++) {
+    let angle = (Math.PI * 2 / totalPetals) * i;
+    petals.push(new Petal(angle));
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  petals.forEach(petal => petal.grow());
+  drawCenter();
+  if (growth < petals[0].maxLength) {
+    growth += 2;
+    requestAnimationFrame(animate);
+  } else {
+    // Flower fully bloomed
+  }
+}
+
+initPetals();
+animate();
+</script>
+
+</body>
+</html>
